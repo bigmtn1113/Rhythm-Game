@@ -25,8 +25,8 @@ public class RhythmGame extends JFrame {
 	private ImageIcon quitButtonBasicImage = new ImageIcon(Main.class.getResource("../images/quitButtonBasic.png"));
 	private ImageIcon quitButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/quitButtonEntered.png"));
 	
-	private Image background = new ImageIcon(Main.class.getResource("../images/introBackground.jpg")).getImage();
-	private JLabel menuBar = new JLabel(new ImageIcon(Main.class.getResource("../images/menuBar.jpg")));
+	private Image background = new ImageIcon(Main.class.getResource("../images/introBackground.png")).getImage();
+	private JLabel menuBar = new JLabel(new ImageIcon(Main.class.getResource("../images/menuBar.png")));
 	
 	private JButton exitButton = new JButton(exitButtonBasicImage);
 	private JButton startButton = new JButton(startButtonBasicImage);
@@ -97,7 +97,7 @@ public class RhythmGame extends JFrame {
 				buttonPressedMusic.start();
 				startButton.setVisible(false);
 				quitButton.setVisible(false);
-				background = new ImageIcon(Main.class.getResource("../images/mainBackground.jpg")).getImage();	// 이미지 교체
+				background = new ImageIcon(Main.class.getResource("../images/mainBackground.png")).getImage();	// 이미지 교체
 			}
 		});
 		add(startButton);
