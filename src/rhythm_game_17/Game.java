@@ -5,6 +5,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -101,31 +104,38 @@ public class Game extends Thread{
 	}
 	
 	public void pressS() {
+		System.out.println(gameMusic.getTime() + " S");	// beat 제작을 위한 정보 출력.
 		judge("S");
 		noteRouteSImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressD() {
+		System.out.println(gameMusic.getTime() + " D");
 		judge("D");
 		noteRouteDImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressF() {
+		System.out.println(gameMusic.getTime() + " F");
 		judge("F");
 		noteRouteFImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressSpace() {
+		System.out.println(gameMusic.getTime() + " Space");
 		judge("Space");
 		noteRouteSpace1Image = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 		noteRouteSpace2Image = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressJ() {
+		System.out.println(gameMusic.getTime() + " J");
 		judge("J");
 		noteRouteJImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressK() {
+		System.out.println(gameMusic.getTime() + " K");
 		judge("K");
 		noteRouteKImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressL() {
+		System.out.println(gameMusic.getTime() + " L");
 		judge("L");
 		noteRouteLImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
@@ -140,41 +150,14 @@ public class Game extends Thread{
 	public void releaseK() { noteRouteKImage = new ImageIcon(Main.class.getResource("../images/noteRoute.png")).getImage(); }
 	public void releaseL() { noteRouteLImage = new ImageIcon(Main.class.getResource("../images/noteRoute.png")).getImage(); }
 	
-	public void dropNotes(String titleName) {
+	public void dropNotes(String titleName) throws Exception {
 		Beat[] beats = null;
 		if (titleName.equals("3rd Prototype - Shadows") && difficulty.equals("Easy")) {
-			int startTime = 4460 - Main.REACH_TIME * 1000;
+			int startTime = 1000 - Main.REACH_TIME * 1000;
 			int gap = 125;	// 노트 간의 떨어지는 간격
 			
 			beats = new Beat[] {
 					new Beat(startTime, "S"),
-					new Beat(startTime + gap * 2, "D"),
-					new Beat(startTime + gap * 4, "S"),
-					new Beat(startTime + gap * 6, "D"),
-					new Beat(startTime + gap * 8, "S"),
-					new Beat(startTime + gap * 10, "D"),
-					new Beat(startTime + gap * 12, "S"),
-					new Beat(startTime + gap * 14, "D"),
-					new Beat(startTime + gap * 18, "J"),
-					new Beat(startTime + gap * 20, "K"),
-					new Beat(startTime + gap * 22, "J"),
-					new Beat(startTime + gap * 24, "K"),
-					new Beat(startTime + gap * 26, "J"),
-					new Beat(startTime + gap * 28, "K"),
-					new Beat(startTime + gap * 30, "J"),
-					new Beat(startTime + gap * 32, "K"),
-					new Beat(startTime + gap * 34, "S"),
-					new Beat(startTime + gap * 36, "D"),
-					new Beat(startTime + gap * 38, "S"),
-					new Beat(startTime + gap * 40, "D"),
-					new Beat(startTime + gap * 42, "S"),
-					new Beat(startTime + gap * 44, "D"),
-					new Beat(startTime + gap * 46, "J"),
-					new Beat(startTime + gap * 48, "K"),
-					new Beat(startTime + gap * 50, "L"),
-					new Beat(startTime + gap * 52, "F"),
-					new Beat(startTime + gap * 52, "Space"),
-					new Beat(startTime + gap * 52, "J"),
 			};
 		}
 		else if (titleName.equals("3rd Prototype - Shadows") && difficulty.equals("Hard")) {
@@ -184,10 +167,30 @@ public class Game extends Thread{
 			};
 		}
 		else if (titleName.equals("Raven & Kreyn - RICH") && difficulty.equals("Easy")) {
-			int startTime = 1000 - Main.REACH_TIME * 1000;
-			beats = new Beat[] {
-					new Beat(startTime, "Space"),
-			};
+			int beatCount = countBeat(titleName, difficulty);
+			int[] time = new int[beatCount];
+			String[] noteType = new String[beatCount];
+			
+			BufferedReader br = new BufferedReader(new FileReader(
+					"C:\\Users\\user\\eclipse-workspace\\Rhythm Game\\src\\music_beats\\" +
+							titleName + " [" + difficulty + "].txt"));
+			
+			int i = 0;
+			String str;
+			while ((str = br.readLine()) != null) {
+				String[] temp = str.split(" ");
+				time[i] = Integer.parseInt(temp[0]);
+				noteType[i] = temp[1];
+				++i;
+			}
+			
+			br.close();
+			
+			int gap = 660 / Main.NOTE_SPEED * Main.SLEEP_TIME;
+			
+			beats = new Beat[beatCount];
+			for (int j = 0; j < beatCount; ++j)
+				beats[j] = new Beat(time[j] - gap, noteType[j]);
 		}
 		else if (titleName.equals("Raven & Kreyn - RICH") && difficulty.equals("Hard")) {
 			int startTime = 1000 - Main.REACH_TIME * 1000;
@@ -232,6 +235,19 @@ public class Game extends Thread{
 		}
 	}
 	
+	public int countBeat(String titleName, String difficulty) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(
+				"C:\\Users\\user\\eclipse-workspace\\Rhythm Game\\src\\music_beats\\" +
+						titleName + " [" + difficulty + "].txt"));
+		
+		int beatCount = 0;
+		while (br.readLine() != null)
+			++beatCount;
+		
+		br.close();
+		return beatCount;
+	}
+	
 	public void judge(String input) {
 		for (int i = 0; i < noteList.size(); ++i) {
 			Note note = noteList.get(i);
@@ -271,7 +287,11 @@ public class Game extends Thread{
 	
 	@Override
 	public void run() {
-		dropNotes(this.titleName);
+		try {
+			dropNotes(this.titleName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void close() {
