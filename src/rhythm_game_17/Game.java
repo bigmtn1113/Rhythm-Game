@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
@@ -35,6 +34,7 @@ public class Game extends Thread{
 	private String musicTitle;
 	private Music gameMusic;
 	private Integer gameScore = 0;
+	private Beat[] beats = null;
 	
 	ArrayList<Note> noteList = new ArrayList<Note>();
 	
@@ -104,38 +104,31 @@ public class Game extends Thread{
 	}
 	
 	public void pressS() {
-		System.out.println(gameMusic.getTime() + " S");	// beat 제작을 위한 정보 출력.
 		judge("S");
 		noteRouteSImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressD() {
-		System.out.println(gameMusic.getTime() + " D");
 		judge("D");
 		noteRouteDImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressF() {
-		System.out.println(gameMusic.getTime() + " F");
 		judge("F");
 		noteRouteFImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressSpace() {
-		System.out.println(gameMusic.getTime() + " Space");
 		judge("Space");
 		noteRouteSpace1Image = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 		noteRouteSpace2Image = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressJ() {
-		System.out.println(gameMusic.getTime() + " J");
 		judge("J");
 		noteRouteJImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressK() {
-		System.out.println(gameMusic.getTime() + " K");
 		judge("K");
 		noteRouteKImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
 	public void pressL() {
-		System.out.println(gameMusic.getTime() + " L");
 		judge("L");
 		noteRouteLImage = new ImageIcon(Main.class.getResource("../images/noteRoutePressed.png")).getImage();
 	}
@@ -151,65 +144,7 @@ public class Game extends Thread{
 	public void releaseL() { noteRouteLImage = new ImageIcon(Main.class.getResource("../images/noteRoute.png")).getImage(); }
 	
 	public void dropNotes(String titleName) throws Exception {
-		Beat[] beats = null;
-		if (titleName.equals("3rd Prototype - Shadows") && difficulty.equals("Easy")) {
-			int startTime = 1000 - Main.REACH_TIME * 1000;
-			int gap = 125;	// 노트 간의 떨어지는 간격
-			
-			beats = new Beat[] {
-					new Beat(startTime, "S"),
-			};
-		}
-		else if (titleName.equals("3rd Prototype - Shadows") && difficulty.equals("Hard")) {
-			int startTime = 1000 - Main.REACH_TIME * 1000;
-			beats = new Beat[] {
-					new Beat(startTime, "Space"),
-			};
-		}
-		else if (titleName.equals("Raven & Kreyn - RICH") && difficulty.equals("Easy")) {
-			int beatCount = countBeat(titleName, difficulty);
-			int[] time = new int[beatCount];
-			String[] noteType = new String[beatCount];
-			
-			BufferedReader br = new BufferedReader(new FileReader(
-					"C:\\Users\\user\\eclipse-workspace\\Rhythm Game\\src\\music_beats\\" +
-							titleName + " [" + difficulty + "].txt"));
-			
-			int i = 0;
-			String str;
-			while ((str = br.readLine()) != null) {
-				String[] temp = str.split(" ");
-				time[i] = Integer.parseInt(temp[0]);
-				noteType[i] = temp[1];
-				++i;
-			}
-			
-			br.close();
-			
-			int gap = 660 / Main.NOTE_SPEED * Main.SLEEP_TIME;
-			
-			beats = new Beat[beatCount];
-			for (int j = 0; j < beatCount; ++j)
-				beats[j] = new Beat(time[j] - gap, noteType[j]);
-		}
-		else if (titleName.equals("Raven & Kreyn - RICH") && difficulty.equals("Hard")) {
-			int startTime = 1000 - Main.REACH_TIME * 1000;
-			beats = new Beat[] {
-					new Beat(startTime, "Space"),
-			};
-		}
-		else if (titleName.equals("Debris & RudeLies - Animal (feat. Jex)") && difficulty.equals("Easy")) {
-			int startTime = 1000 - Main.REACH_TIME * 1000;
-			beats = new Beat[] {
-					new Beat(startTime, "Space"),
-			};
-		}
-		else if (titleName.equals("Debris & RudeLies - Animal (feat. Jex)") && difficulty.equals("Hard")) {
-			int startTime = 1000 - Main.REACH_TIME * 1000;
-			beats = new Beat[] {
-					new Beat(startTime, "Space"),
-			};
-		}
+		makeBeats(titleName, difficulty);
 		
 		gameMusic.start();	// Beat 배열 초기화하는데 시간걸리므로 시간격차를 줄이기 위해 초기화 후 음악 재생 
 		
@@ -233,6 +168,33 @@ public class Game extends Thread{
 				}
 			}
 		}
+	}
+	
+	public void makeBeats(String titleName, String difficulty) throws Exception {
+		int beatCount = countBeat(titleName, difficulty);
+		int[] time = new int[beatCount];
+		String[] noteType = new String[beatCount];
+		
+		BufferedReader br = new BufferedReader(new FileReader(
+				"C:\\Users\\user\\eclipse-workspace\\Rhythm Game\\src\\music_beats\\" +
+						titleName + " [" + difficulty + "].txt"));
+		
+		int i = 0;
+		String str;
+		while ((str = br.readLine()) != null) {
+			String[] temp = str.split(" ");
+			time[i] = Integer.parseInt(temp[0]);
+			noteType[i] = temp[1];
+			++i;
+		}
+		
+		br.close();
+		
+		int gap = 660 / Main.NOTE_SPEED * Main.SLEEP_TIME;
+		
+		beats = new Beat[beatCount];
+		for (int j = 0; j < beatCount; ++j)
+			beats[j] = new Beat(time[j] - gap, noteType[j]);
 	}
 	
 	public int countBeat(String titleName, String difficulty) throws Exception {
@@ -263,25 +225,49 @@ public class Game extends Thread{
 		if (!judge.equals("None")) {
 			blueFlareImage = new ImageIcon(Main.class.getResource("../images/blueFlare.png")).getImage();
 		}
-		if (judge.equals("Late")) {
-			gameScore += 10;
-			judgeImage = new ImageIcon(Main.class.getResource("../images/judgeLate.png")).getImage();
+		if (difficulty.equals("Easy")) {
+			if (judge.equals("Late")) {
+				gameScore += 10;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeLate.png")).getImage();
+			}
+			else if (judge.equals("Good")) {
+				gameScore += 50;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeGood.png")).getImage();
+			}
+			else if (judge.equals("Great")) {
+				gameScore += 100;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeGreat.png")).getImage();
+			}
+			else if (judge.equals("Perfect")) {
+				gameScore += 200;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgePerfect.png")).getImage();
+			}
+			else if (judge.equals("Early")) {
+				gameScore += 10;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeEarly.png")).getImage();
+			}
 		}
-		else if (judge.equals("Good")) {
-			gameScore += 50;
-			judgeImage = new ImageIcon(Main.class.getResource("../images/judgeGood.png")).getImage();
-		}
-		else if (judge.equals("Great")) {
-			gameScore += 100;
-			judgeImage = new ImageIcon(Main.class.getResource("../images/judgeGreat.png")).getImage();
-		}
-		else if (judge.equals("Perfect")) {
-			gameScore += 200;
-			judgeImage = new ImageIcon(Main.class.getResource("../images/judgePerfect.png")).getImage();
-		}
-		else if (judge.equals("Early")) {
-			gameScore += 10;
-			judgeImage = new ImageIcon(Main.class.getResource("../images/judgeEarly.png")).getImage();
+		else if (difficulty.equals("Hard")) {
+			if (judge.equals("Late")) {
+				gameScore += 15;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeLate.png")).getImage();
+			}
+			else if (judge.equals("Good")) {
+				gameScore += 75;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeGood.png")).getImage();
+			}
+			else if (judge.equals("Great")) {
+				gameScore += 150;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeGreat.png")).getImage();
+			}
+			else if (judge.equals("Perfect")) {
+				gameScore += 300;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgePerfect.png")).getImage();
+			}
+			else if (judge.equals("Early")) {
+				gameScore += 15;
+				judgeImage = new ImageIcon(Main.class.getResource("../images/judgeEarly.png")).getImage();
+			}
 		}
 	}
 	

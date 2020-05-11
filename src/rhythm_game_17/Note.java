@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 public class Note extends Thread{
 	
 	private Image noteBasicImage = new ImageIcon(Main.class.getResource("../images/noteBasic.png")).getImage();
-	private int x, y = 580 - (1000 / Main.SLEEP_TIME * Main.NOTE_SPEED) * Main.REACH_TIME;	// 1초 뒤 판정라인에 도착.
+	private int x, y = 580 - (1000 / Main.SLEEP_TIME * Main.NOTE_SPEED) * Main.REACH_TIME;	// Main.REACH_TIME초 뒤 판정라인에 도착.
 	private String noteType;
 	private boolean proceeded = true;	// 노트 진행 여부
 	
@@ -42,10 +42,8 @@ public class Note extends Thread{
 	public void drop() {
 		y += Main.NOTE_SPEED;
 		
-		if (y > 620) {	// 노트가 판정 라인을 넘어서면
-			System.out.println("Miss");
+		if (y > 620)	// 노트가 판정 라인을 넘어서면 
 			close();
-		}
 	}
 	
 	@Override
@@ -68,37 +66,30 @@ public class Note extends Thread{
 	
 	public String judge() {
 		if (y >= 613) {
-			System.out.println("Late");
 			close();
 			return "Late";
 		}
 		else if (y >= 600) {
-			System.out.println("Good");
 			close();
 			return "Good";
 		}
 		else if (y >= 587) {
-			System.out.println("Great");
 			close();
 			return "Great";
 		}
 		else if (y >= 573) {
-			System.out.println("Perfect");
 			close();
 			return "Perfect";
 		}
 		else if (y >= 565) {
-			System.out.println("Great");
 			close();
 			return "Great";
 		}
 		else if (y >= 550) {
-			System.out.println("Good");
 			close();
 			return "Good";
 		}
 		else if (y >= 535) {
-			System.out.println("Early");
 			close();
 			return "Early";
 		}
