@@ -49,4 +49,4 @@
 > -> Back 버튼을 눌러서 게임에서 나온 뒤 다시 실행하시면 됩니다.
   
 ## 참고
-* Youtube강좌: <https://www.youtube.com/watch?v=xs92kqU2YWg&list=PLRx0vPvlEmdDySO3wDqMYGKMVH4Qa4QhR>
+> * Youtube강좌: <https://www.youtube.com/watch?v=xs92kqU2YWg&list=PLRx0vPvlEmdDySO3wDqMYGKMVH4Qa4QhR>
