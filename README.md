@@ -47,3 +47,6 @@
 >  
 > ### ● 게임 종료 후 새로 게임을 하려는데 게임 결과 화면이 표시될 경우  
 > -> Back 버튼을 눌러서 게임에서 나온 뒤 다시 실행하시면 됩니다.
+  
+## 참고
+* Youtube강좌: <https://www.youtube.com/watch?v=xs92kqU2YWg&list=PLRx0vPvlEmdDySO3wDqMYGKMVH4Qa4QhR>
