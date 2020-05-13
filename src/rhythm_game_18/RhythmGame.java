@@ -435,6 +435,7 @@ public class RhythmGame extends JFrame {
 		game = new Game(trackList.get(nowSelected).getTitleName(), difficulty, trackList.get(nowSelected).getGameMusic());
 		game.start();
 		setFocusable(true);	// 창이 전환되면서 키보드 포커스가 안 맞을 수 있으므로 메인 프레임에 포커스 맞주기
+		requestFocus();
 	}
 	
 	public void backMain() {
